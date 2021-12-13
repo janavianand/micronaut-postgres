@@ -1,21 +1,49 @@
 package com.tutorial;
 
-import io.micronaut.runtime.EmbeddedApplication;
+import io.micronaut.http.client.HttpClient;
+import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
 
 import jakarta.inject.Inject;
 
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 @MicronautTest
-class CrudappTest {
+class TodoControllerTest {
 
     @Inject
-    EmbeddedApplication<?> application;
+    @Client("/todo")
+    HttpClient client;
+    private ArrayList<String> expectedArray = new ArrayList<>(
+            List.of("pick up","groceries"));
+    private Map<String, String> expectedJson = Map.of("pick up","pick up","groceries","groceries");
 
     @Test
-    void testItWorks() {
-        Assertions.assertTrue(application.isRunning());
+    void getTodoTest1() {
+        var response = client.toBlocking().retrieve("/");
+        assertEquals("Todo list",response);
+    }
+
+    @Test
+    void getTodoTest2() {
+        var response = client.toBlocking().exchange("/",String.class);
+        assertEquals("Todo list",response.body());
+    }
+
+    @Test
+    void getTodoTest3() {
+
+        var response = client.toBlocking().retrieve("/array",ArrayList.class);
+        assertEquals(expectedArray,response);
+    }
+
+    @Test
+    void getTodoTest4() {
+        var response = client.toBlocking().retrieve("/json",Map.class);
+        assertEquals(expectedJson,response);
     }
 
 }
