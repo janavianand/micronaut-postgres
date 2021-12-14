@@ -1,5 +1,6 @@
 package com.tutorial;
 
+import io.micronaut.http.MediaType;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -9,6 +10,7 @@ import jakarta.inject.Inject;
 
 import java.util.*;
 
+import static io.micronaut.http.HttpRequest.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @MicronautTest
@@ -46,4 +48,16 @@ class TodoControllerTest {
         assertEquals(expectedJson,response);
     }
 
+    @Test
+    void putTodoTest() {
+        var response = client.toBlocking().retrieve(PUT("/","laundry").contentType(MediaType.TEXT_PLAIN), Map.class);
+        Map<String, String> newJson = Map.of("pick up","pick up","groceries","groceries","laundry","laundry");
+        assertEquals(newJson,response);
+    }
+
+    @Test
+    void deleteTodoTest() {
+        var response = client.toBlocking().retrieve(DELETE("/laundry").contentType(MediaType.TEXT_PLAIN),Map.class);
+        assertEquals(expectedJson,response);
+    }
 }

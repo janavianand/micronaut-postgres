@@ -25,4 +25,19 @@ public class TodoService {
     public ArrayList<String> todoListArray() {
         return todolist;
     }
+
+    public Map<String, String> addTodo(String newTodo) {
+        todolist.add(newTodo);
+        todoJson.put(newTodo,newTodo);
+        return todoJson;
+    }
+
+    public Map<String, String> deleteTodo(String todo) {
+        if(!todoJson.containsKey(todo)){
+            return todoJson;
+        }
+        todolist.remove(todo);
+        todoJson.remove(todo);
+        return todoJson;
+    }
 }
