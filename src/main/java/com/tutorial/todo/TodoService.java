@@ -1,5 +1,8 @@
 package com.tutorial.todo;
 
+import com.tutorial.todo.model.CustomError;
+import io.micronaut.http.HttpResponse;
+import io.micronaut.http.HttpStatus;
 import jakarta.inject.Singleton;
 
 import java.util.*;
@@ -32,12 +35,13 @@ public class TodoService {
         return todoJson;
     }
 
-    public Map<String, String> deleteTodo(String todo) {
+    public HttpResponse deleteTodo(String todo) {
         if(!todoJson.containsKey(todo)){
-            return todoJson;
+            final CustomError notFound = CustomError.builder().status(HttpStatus.NOT_FOUND.getCode()).error(HttpStatus.NOT_FOUND.name()).message("todo not found.").build();
+            return HttpResponse.notFound(notFound);
         }
         todolist.remove(todo);
         todoJson.remove(todo);
-        return todoJson;
+        return HttpResponse.ok(todoJson);
     }
 }
